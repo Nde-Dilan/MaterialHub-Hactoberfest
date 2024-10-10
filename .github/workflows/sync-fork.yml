@@ -1,0 +1,19 @@
+name: Sync Fork with Upstream
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: GDG-On-Campus-ICTU/MaterialHub-Hactoberfest
+          ref: main  # Replace 'main' with the desired branch
+      - name: Merge Upstream Changes
+        run: |
+          git checkout main
+          git merge upstream/main --allow-unrelated-histories
