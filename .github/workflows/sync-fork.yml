@@ -1,9 +1,8 @@
 name: Sync Fork with Upstream
 
 on:
-  push:
-    branches:
-      - main
+  repository_dispatch:
+    types: [sync-fork]
 
 jobs:
   sync:
@@ -11,10 +10,27 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: GDG-On-Campus-ICTU/MaterialHub-Hactoberfest
-          ref: main  # Replace 'main' with the desired branch
-      - name: Merge Upstream Changes
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN_AUTO_UPDATE_FORK }}
+          repository: Nde-Dilan/MaterialHub-Hactoberfest
+          
+      - name: Configure Git
         run: |
-          git checkout main
-          git pull
-          git merge origin/main --allow-unrelated-histories
+          git config user.name 'GitHub Actions'
+          git config user.email 'actions@github.com'
+          
+      - name: Add Upstream Remote
+        run: |
+          git remote add origin https://github.com/GDG-On-Campus-ICTU/MaterialHub-Hactoberfest.git
+          
+      - name: Fetch Upstream
+        run: |
+          git fetch origin
+          
+      - name: Merge Upstream
+        run: |
+          git merge origin/main --allow-unrelated-histories --no-edit
+          
+      - name: Push Changes
+        run: |
+          git push origin main
+          
